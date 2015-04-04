@@ -17,10 +17,10 @@ OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 $(ODIR)/%.o: %.c $(DEPS)
 	$(CXX) -c -o $@ $< $(CFLAGS)
 
-all: $(OBJ)
+clipper: $(OBJ)
 	$(CXX) -o $@ $^ $(CFLAGS) $(LIBS)
 
-.PHONY: clean all
+.PHONY: clean clipper
 
 clean:
 	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ 
