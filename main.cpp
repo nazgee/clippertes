@@ -23,12 +23,14 @@
 #endif
 
 #include "clipper.hpp"          //http://sourceforge.net/projects/polyclipping/ (clipper)
+#include "benchmark.h"
 
 #include <boost/foreach.hpp>    //http://www.boost.org/  
 #include <boost/geometry.hpp>   //(boost geometry aka ggl)
 #include <boost/geometry/geometries/point_xy.hpp>
 #include <boost/geometry/geometries/polygon.hpp>
-#include <boost/geometry/io/wkt/wkt.hpp>
+//#include <boost/geometry/io/wkt/wkt.hpp>
+#include <boost/geometry/domains/gis/io/wkt/wkt.hpp>
 #include <boost/geometry/multi/geometries/multi_polygon.hpp>
 
 //---------------------------------------------------------------------------
@@ -324,8 +326,8 @@ int MakeFanBlades(Polys& p, int blade_cnt, const Point& center, Point& radius)
 
 void StarTest()
 {
+  char tm_str[64];
   Polys subj(1), clip(1), sol;
-  double elapsed = 0;
   cout << "\nStar Test:\n";
 
   Point center1 = Point(310,320);
@@ -333,8 +335,8 @@ void StarTest()
   Star(clip[0], 325, 325, 300, 150, 250, 0.005);
 
   cout << "No. vertices in subject & clip polygons: " << CountVertices(subj) + CountVertices(clip) << '\n';
-  elapsed = DoClipper(subj, clip, sol, Xor);
-  cout << "Clipper Time:  " << elapsed << " msecs\n";
+  TIME(DoClipper(subj, clip, sol, Xor), tm_str);
+  cout << "Clipper Time:  " << tm_str << "\n";
   cout << "Test finished. ('st_classic.svg' file created)\n\n";
 }
 //---------------------------------------------------------------------------
@@ -342,7 +344,7 @@ void StarTest()
 void ClassicTest()
 {
   Polys subj, clip, sol;
-  double elapsed = 0;
+  char tm_str[64];
 
   cout << "\nClassic Test:\n";
   if (!LoadFromWlrFile("s.wlr", subj) || !LoadFromWlrFile("c.wlr", clip))
@@ -353,8 +355,8 @@ void ClassicTest()
   }
 
   cout << "No. vertices in subject & clip polygons: " << CountVertices(subj) + CountVertices(clip) << '\n';
-  elapsed = DoClipper(subj, clip, sol);
-  cout << "Clipper Time:  " << elapsed << " msecs\n";
+  TIME(DoClipper(subj, clip, sol), tm_str);
+  cout << "Clipper Time:  " << tm_str << " s\n";
   cout << "Test finished. ('st_classic.svg' file created)\n\n";
 }
 //---------------------------------------------------------------------------
@@ -362,17 +364,17 @@ void ClassicTest()
 void EllipseAndFanTest()
 {
   Polys subj, clip, sol;
-  double elapsed = 0;
+  char tm_str[64];
   cout << "\nEllipses and Fan Test:\n";
 
   Point center1 = Point(310,320), center2 = Point(410,350);
-  MakeShrinkingEllipses(subj, 80, center1, Point(290, 320), 5);
+  MakeShrinkingEllipses(subj, 800, center1, Point(290, 320), 5);
   Point p = Point(340,300);
-  MakeFanBlades(clip, 64, center2, p);
+  MakeFanBlades(clip, 640, center2, p);
 
   cout << "No. vertices in subject & clip polygons: " << CountVertices(subj) + CountVertices(clip) << '\n';
-  elapsed = DoClipper(subj, clip, sol);
-  cout << "Clipper Time:  " << elapsed << " msecs\n";
+  TIME(DoClipper(subj, clip, sol), tm_str);
+  cout << "Clipper Time:  " << tm_str << " s\n";
   cout << "Test finished. ('st_ellipse_fan.svg' file created)\n\n";
 }
 //---------------------------------------------------------------------------
@@ -380,17 +382,17 @@ void EllipseAndFanTest()
 void EllipseAndRectTest()
 {
   Polys subj, clip, sol;
-  double elapsed = 0;
+  char tm_str[64];
   cout << "\nEllipses and Rectangles Test:\n";
 
   Point center1 = Point(310,320), center2 = Point(410,350);
-  MakeShrinkingEllipses(subj, 80, center1, Point(290, 320), 5);
+  MakeShrinkingEllipses(subj, 800, center1, Point(290, 320), 5);
   Point r = Point(340, 300);
-  MakeShrinkingRects(clip, 80, center2, r, 5);
+  MakeShrinkingRects(clip, 800, center2, r, 5);
 
   cout << "No. vertices in subject & clip polygons: " << CountVertices(subj) + CountVertices(clip) << '\n';
-  elapsed = DoClipper(subj, clip, sol);
-  cout << "Clipper Time:  " << elapsed << " msecs\n";
+  TIME( DoClipper(subj, clip, sol),tm_str);
+  cout << "Clipper Time:  " << tm_str << "s\n";
   cout << "Test finished. ('st_ellipse_rect.svg' file created)\n\n";
 }
 //---------------------------------------------------------------------------

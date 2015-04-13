@@ -7,10 +7,10 @@ LDIR=./lib
 
 LIBS=-lm
 
-_DEPS = clipper.h
+_DEPS = clipper.h benchmark.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = main.o clipper.o
+_OBJ = benchmark.o main.o clipper.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
@@ -23,4 +23,4 @@ clipper: $(OBJ)
 .PHONY: clean clipper
 
 clean:
-	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ 
+	rm -f $(ODIR)/*.o *~ $(INCDIR)/*~ 
